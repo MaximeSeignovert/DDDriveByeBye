@@ -1,9 +1,16 @@
 ﻿import { createRootRoute, Link, Outlet, useRouterState } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import { User, Search, Route as RouteIcon } from 'lucide-react'
+import { BriefcaseBusiness, User, Search, Route as RouteIcon } from 'lucide-react'
+import { useUserMode } from '@/lib/user-mode'
 
 const navItems = [
   { to: '/recherche', label: 'Recherche', icon: Search },
+  { to: '/trajets', label: 'Trajets', icon: RouteIcon },
+  { to: '/user', label: 'User', icon: User },
+] as const
+
+const professionalNavItems = [
+  { to: '/pro', label: 'Courses', icon: BriefcaseBusiness },
   { to: '/trajets', label: 'Trajets', icon: RouteIcon },
   { to: '/user', label: 'User', icon: User },
 ] as const
@@ -13,8 +20,10 @@ export const Route = createRootRoute({
 })
 
 function RootLayout() {
+  const userMode = useUserMode()
   const pathname = useRouterState({ select: (state) => state.location.pathname })
-  const isSearchMapPage = pathname === '/recherche'
+  const isSearchMapPage = pathname === '/recherche' || pathname === '/recherche/'
+  const visibleNavItems = userMode === 'professionnel' ? professionalNavItems : navItems
 
   return (
     <>
@@ -23,7 +32,7 @@ function RootLayout() {
           <Outlet />
         </main>
         <nav className="fixed bottom-0 left-1/2 z-50 flex w-full max-w-md -translate-x-1/2 border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/70">
-          {navItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const Icon = item.icon
             return (
               <Link

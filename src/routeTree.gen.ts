@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UserRouteImport } from './routes/user'
 import { Route as TrajetsRouteImport } from './routes/trajets'
 import { Route as RechercheRouteImport } from './routes/recherche'
+import { Route as ProRouteImport } from './routes/pro'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RechercheIndexRouteImport } from './routes/recherche.index'
 import { Route as UserParametreRouteImport } from './routes/user.parametre'
 import { Route as RechercheResultatsRouteImport } from './routes/recherche.resultats'
 import { Route as UserParametreZoneActiviteRouteImport } from './routes/user.parametre.zone-activite'
@@ -34,10 +36,20 @@ const RechercheRoute = RechercheRouteImport.update({
   path: '/recherche',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProRoute = ProRouteImport.update({
+  id: '/pro',
+  path: '/pro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const RechercheIndexRoute = RechercheIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RechercheRoute,
 } as any)
 const UserParametreRoute = UserParametreRouteImport.update({
   id: '/parametre',
@@ -69,22 +81,25 @@ const UserParametreTranchesHorairesRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/pro': typeof ProRoute
   '/recherche': typeof RechercheRouteWithChildren
   '/trajets': typeof TrajetsRoute
   '/user': typeof UserRouteWithChildren
   '/recherche/resultats': typeof RechercheResultatsRoute
   '/user/parametre': typeof UserParametreRouteWithChildren
+  '/recherche/': typeof RechercheIndexRoute
   '/user/parametre/tranches-horaires': typeof UserParametreTranchesHorairesRoute
   '/user/parametre/vehicule': typeof UserParametreVehiculeRoute
   '/user/parametre/zone-activite': typeof UserParametreZoneActiviteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/recherche': typeof RechercheRouteWithChildren
+  '/pro': typeof ProRoute
   '/trajets': typeof TrajetsRoute
   '/user': typeof UserRouteWithChildren
   '/recherche/resultats': typeof RechercheResultatsRoute
   '/user/parametre': typeof UserParametreRouteWithChildren
+  '/recherche': typeof RechercheIndexRoute
   '/user/parametre/tranches-horaires': typeof UserParametreTranchesHorairesRoute
   '/user/parametre/vehicule': typeof UserParametreVehiculeRoute
   '/user/parametre/zone-activite': typeof UserParametreZoneActiviteRoute
@@ -92,11 +107,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/pro': typeof ProRoute
   '/recherche': typeof RechercheRouteWithChildren
   '/trajets': typeof TrajetsRoute
   '/user': typeof UserRouteWithChildren
   '/recherche/resultats': typeof RechercheResultatsRoute
   '/user/parametre': typeof UserParametreRouteWithChildren
+  '/recherche/': typeof RechercheIndexRoute
   '/user/parametre/tranches-horaires': typeof UserParametreTranchesHorairesRoute
   '/user/parametre/vehicule': typeof UserParametreVehiculeRoute
   '/user/parametre/zone-activite': typeof UserParametreZoneActiviteRoute
@@ -105,33 +122,38 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/pro'
     | '/recherche'
     | '/trajets'
     | '/user'
     | '/recherche/resultats'
     | '/user/parametre'
+    | '/recherche/'
     | '/user/parametre/tranches-horaires'
     | '/user/parametre/vehicule'
     | '/user/parametre/zone-activite'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/recherche'
+    | '/pro'
     | '/trajets'
     | '/user'
     | '/recherche/resultats'
     | '/user/parametre'
+    | '/recherche'
     | '/user/parametre/tranches-horaires'
     | '/user/parametre/vehicule'
     | '/user/parametre/zone-activite'
   id:
     | '__root__'
     | '/'
+    | '/pro'
     | '/recherche'
     | '/trajets'
     | '/user'
     | '/recherche/resultats'
     | '/user/parametre'
+    | '/recherche/'
     | '/user/parametre/tranches-horaires'
     | '/user/parametre/vehicule'
     | '/user/parametre/zone-activite'
@@ -139,6 +161,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProRoute: typeof ProRoute
   RechercheRoute: typeof RechercheRouteWithChildren
   TrajetsRoute: typeof TrajetsRoute
   UserRoute: typeof UserRouteWithChildren
@@ -167,12 +190,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RechercheRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pro': {
+      id: '/pro'
+      path: '/pro'
+      fullPath: '/pro'
+      preLoaderRoute: typeof ProRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/recherche/': {
+      id: '/recherche/'
+      path: '/'
+      fullPath: '/recherche/'
+      preLoaderRoute: typeof RechercheIndexRouteImport
+      parentRoute: typeof RechercheRoute
     }
     '/user/parametre': {
       id: '/user/parametre'
@@ -214,10 +251,12 @@ declare module '@tanstack/react-router' {
 
 interface RechercheRouteChildren {
   RechercheResultatsRoute: typeof RechercheResultatsRoute
+  RechercheIndexRoute: typeof RechercheIndexRoute
 }
 
 const RechercheRouteChildren: RechercheRouteChildren = {
   RechercheResultatsRoute: RechercheResultatsRoute,
+  RechercheIndexRoute: RechercheIndexRoute,
 }
 
 const RechercheRouteWithChildren = RechercheRoute._addFileChildren(
@@ -252,6 +291,7 @@ const UserRouteWithChildren = UserRoute._addFileChildren(UserRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProRoute: ProRoute,
   RechercheRoute: RechercheRouteWithChildren,
   TrajetsRoute: TrajetsRoute,
   UserRoute: UserRouteWithChildren,
