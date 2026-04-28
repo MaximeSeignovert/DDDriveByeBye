@@ -1,0 +1,66 @@
+﻿{
+  "ongoing": [
+    {
+      "id": "ongoing-1",
+      "role": "passager",
+      "from": "Part-Dieu",
+      "to": "Confluence",
+      "eta": "11 min",
+      "status": "En cours",
+      "driverName": "Nadia B.",
+      "pickupAddress": "Gare Lyon Part-Dieu, sortie Vivier Merle",
+      "dropoffAddress": "Pôle de loisirs Confluence",
+      "vehicle": "Renault Zoe",
+      "seats": 1,
+      "price": "4,20 EUR",
+      "notes": "Le conducteur attend au niveau depose-minute."
+    },
+    {
+      "id": "ongoing-2",
+      "role": "conducteur",
+      "from": "Villeurbanne",
+      "to": "Gerland",
+      "eta": "18 min",
+      "status": "Prise en charge",
+      "passengerName": "Leo M.",
+      "pickupAddress": "Metro Gratte-Ciel",
+      "dropoffAddress": "Stade de Gerland",
+      "vehicle": "Peugeot 308",
+      "seats": 3,
+      "price": "6,80 EUR",
+      "notes": "Passager confirme, arrivee prevue cote avenue Jean Jaures."
+    }
+  ],
+  "planned": [
+    {
+      "id": "planned-1",
+      "role": "conducteur",
+      "from": "Bron",
+      "to": "Lyon 7",
+      "eta": "Mercredi 08:30",
+      "status": "Planifie",
+      "scheduledAt": "Mercredi 08:30",
+      "passengerName": "Sofia R.",
+      "pickupAddress": "Bron Hotel de Ville",
+      "dropoffAddress": "Universite Lyon 2 - Berges du Rhone",
+      "vehicle": "Toyota Yaris",
+      "seats": 2,
+      "price": "5,50 EUR"
+    },
+    {
+      "id": "planned-2",
+      "role": "passager",
+      "from": "Vieux Lyon",
+      "to": "Ecully",
+      "eta": "Jeudi 19:10",
+      "status": "Planifie",
+      "scheduledAt": "Jeudi 19:10",
+      "driverName": "Karim D.",
+      "pickupAddress": "Place Saint-Jean",
+      "dropoffAddress": "Campus Ecully",
+      "vehicle": "Citroen C3",
+      "seats": 1,
+      "price": "7,10 EUR"
+    }
+  ]
+}

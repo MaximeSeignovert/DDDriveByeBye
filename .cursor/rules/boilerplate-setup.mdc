@@ -1,0 +1,74 @@
+---
+description: Boilerplate React TypeScript - Setup et personnalisation rapide
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Boilerplate React TypeScript - Setup rapide
+
+## 🎯 Stack technologique
+- React 19.1.0 avec TypeScript strict
+- TanStack Router pour le routing  
+- TailwindCSS v4.1.8 pour les styles
+- shadcn/ui (style new-york) pour les composants UI
+- Vite comme bundler et dev server
+
+## 📋 Checklist de personnalisation
+
+### 1. Renommage de l'application
+Quand tu demandes de personnaliser le boilerplate, je dois :
+
+- **package.json** : Changer le `name` de "boilerplate" vers le nouveau nom
+- **index.html** : Mettre à jour le `<title>` 
+- **README.md** : Remplacer les références au boilerplate
+
+### 2. Nettoyage des routes de démo
+- Supprimer `src/routes/counter.tsx` et `src/routes/index.tsx`
+- Garder uniquement `src/routes/__root.tsx`
+- Créer une nouvelle route d'accueil appropriée au projet
+
+### 3. Installation des composants shadcn/ui
+Suggérer les composants de base couramment utilisés :
+```bash
+npx shadcn@latest add button
+npx shadcn@latest add input
+npx shadcn@latest add card
+npx shadcn@latest add dialog
+npx shadcn@latest add form
+npx shadcn@latest add toast
+```
+
+### 4. Configuration du thème
+- Le thème shadcn/ui est déjà configuré (style new-york)
+- Variables CSS dans `src/styles.css`
+- Couleurs personnalisables via TailwindCSS
+
+## 🚀 Commandes rapides de setup
+
+### Setup complet en 4 étapes :
+```bash
+# 1. Renommer l'app (manuellement dans package.json et index.html)
+
+# 2. Nettoyer les routes de démo
+rm src/routes/counter.tsx src/routes/index.tsx
+
+# 3. Installer les composants shadcn/ui essentiels
+npx shadcn@latest add button input card dialog form toast
+
+# 4. Démarrer le développement
+npm run dev
+```
+
+## 📦 Composants shadcn/ui par cas d'usage
+
+**App simple :** `button input card`
+**App avec formulaires :** `+ form select checkbox textarea label`
+**App avec navigation :** `+ navigation-menu tabs breadcrumb`  
+**App avec données :** `+ table pagination separator dialog`
+
+## 💡 Conventions de code
+- Alias `@/` pour `./src/`
+- Composants fonctionnels uniquement
+- Props destructurées et typées explicitement
+- TailwindCSS uniquement, fonction `cn()` pour merger les classes
+- Utiliser `React.forwardRef` pour les composants UI réutilisables

@@ -1,0 +1,12 @@
+﻿{
+  "destinationPlaceholder": "Ex: Gare Part-Dieu",
+  "departurePlaceholder": "Ex: 14 Rue de Marseille, Lyon",
+  "suggestions": [
+    "Aeroport",
+    "Centre-ville",
+    "Campus",
+    "Zone d'activite"
+  ],
+  "nowLabel": "Maintenant",
+  "plannedLabel": "Planifie"
+}

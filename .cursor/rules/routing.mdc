@@ -1,0 +1,71 @@
+---
+description: TanStack Router - Routes et navigation
+globs: ["src/routes/**/*"]
+alwaysApply: false
+---
+
+# TanStack Router
+
+## 🗑️ Nettoyage des routes de démo
+```bash
+# Supprimer les routes de démo
+rm src/routes/counter.tsx src/routes/index.tsx
+# Garder seulement __root.tsx
+```
+
+## Structure des routes
+- Toutes les routes dans `@/routes/`
+- Utiliser la convention de nommage de TanStack Router
+- Préférer la colocation des composants avec leurs routes
+
+## Templates pour nouvelles routes
+
+### Route d'accueil simple (src/routes/index.tsx)
+```typescript
+import { createFileRoute } from '@tanstack/react-router'
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+
+export const Route = createFileRoute('/')({
+  component: HomePage
+})
+
+function HomePage() {
+  return (
+    <div className="container mx-auto p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Bienvenue sur [NOM_APP]</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>Votre application est prête !</p>
+          <Button className="mt-4">Commencer</Button>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+```
+
+### Route simple (src/routes/about.tsx)
+```typescript
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/about')({
+  component: AboutPage
+})
+
+function AboutPage() {
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-4">À propos</h1>
+      <p>Description de votre application.</p>
+    </div>
+  )
+}
+```
+
+## 🧭 Navigation
+- Liens typés : `<Link to="/about">About</Link>`
+- Navigation programmatique : `const navigate = useNavigate()`
+- Paramètres d'URL automatiquement typés

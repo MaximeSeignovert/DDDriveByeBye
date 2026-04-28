@@ -1,0 +1,41 @@
+---
+description: Composants shadcn/ui - Installation et utilisation
+globs: ["src/components/**/*"]
+alwaysApply: false
+---
+
+# Composants shadcn/ui
+
+## 🛠️ Installation rapide
+```bash
+# Essentiels pour tout projet
+npx shadcn@latest add button input card dialog form toast
+
+# Pack formulaires  
+npx shadcn@latest add select checkbox radio-group textarea label
+
+# Pack navigation
+npx shadcn@latest add navigation-menu tabs breadcrumb
+
+# Pack données
+npx shadcn@latest add table pagination separator
+```
+
+## 📋 Liste complète des composants
+
+**Essentiels :** button, input, card, dialog, form, toast
+**Formulaires :** select, checkbox, radio-group, textarea, label  
+**Navigation :** navigation-menu, tabs, breadcrumb
+**Données :** table, pagination, separator
+**Avancés :** dropdown-menu, slider, progress, command, popover
+
+## 💡 Workflow d'utilisation
+1. **Installer** : `npx shadcn@latest add [component]`
+2. **Importer** : `import { Button } from "@/components/ui/button"`
+3. **Utiliser** : `<Button variant="outline">Click me</Button>`
+
+## 🎨 Personnalisation
+- Style "new-york" pré-configuré
+- Variables CSS dans `src/styles.css`
+- Fonction `cn()` pour classes conditionnelles
+- `cva` pour créer des variants personnalisés

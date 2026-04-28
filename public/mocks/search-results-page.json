@@ -1,0 +1,42 @@
+﻿{
+  "rideshare": [
+    {
+      "id": "ride-1",
+      "driverName": "Yanis L.",
+      "rating": 4.8,
+      "from": "Part-Dieu",
+      "to": "Confluence",
+      "departureIn": "8 min",
+      "seatsLeft": 2
+    },
+    {
+      "id": "ride-2",
+      "driverName": "Salome P.",
+      "rating": 4.6,
+      "from": "Bellecour",
+      "to": "Gerland",
+      "departureIn": "15 min",
+      "seatsLeft": 1
+    }
+  ],
+  "vtc": [
+    {
+      "id": "vtc-1",
+      "company": "Lyon VTC Services",
+      "vehicle": "Tesla Model 3",
+      "from": "Part-Dieu",
+      "to": "Confluence",
+      "waitTime": "4 min",
+      "price": "18,50 EUR"
+    },
+    {
+      "id": "vtc-2",
+      "company": "CityCab Pro",
+      "vehicle": "Peugeot 508",
+      "from": "Bellecour",
+      "to": "Gerland",
+      "waitTime": "6 min",
+      "price": "16,20 EUR"
+    }
+  ]
+}
