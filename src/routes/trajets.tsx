@@ -177,7 +177,7 @@ function TripDetailsDrawer({ tripDetails, onClose }: TripDetailsDrawerProps) {
 
   return (
     <Drawer open={tripDetails !== null} onOpenChange={(open) => (!open ? onClose() : null)} direction="bottom">
-      <DrawerContent className="left-1/2 max-h-[85dvh] w-full max-w-md -translate-x-1/2 overflow-hidden rounded-t-2xl border">
+      <DrawerContent className="mx-auto max-h-[85dvh] w-full max-w-md overflow-hidden rounded-t-2xl border">
         {tripDetails && trip ? (
           <>
             <DrawerHeader className="border-b bg-background text-left">

@@ -57,9 +57,9 @@ function AvailabilityParametrePage() {
   return (
     <div className="space-y-4">
       <Button asChild variant="ghost" className="px-2">
-        <Link to="/user/parametre">
+        <Link to="/user">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Retour parametres
+          Retour profil
         </Link>
       </Button>
 

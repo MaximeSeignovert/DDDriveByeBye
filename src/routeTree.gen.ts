@@ -14,14 +14,10 @@ import { Route as TrajetsRouteImport } from './routes/trajets'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UserParametreRouteImport } from './routes/user.parametre'
-import { Route as UserConfigRouteImport } from './routes/user.config'
 import { Route as RechercheResultatsRouteImport } from './routes/recherche.resultats'
 import { Route as UserParametreZoneActiviteRouteImport } from './routes/user.parametre.zone-activite'
 import { Route as UserParametreVehiculeRouteImport } from './routes/user.parametre.vehicule'
 import { Route as UserParametreTranchesHorairesRouteImport } from './routes/user.parametre.tranches-horaires'
-import { Route as UserConfigZoneActiviteRouteImport } from './routes/user.config.zone-activite'
-import { Route as UserConfigVehiculeRouteImport } from './routes/user.config.vehicule'
-import { Route as UserConfigTranchesHorairesRouteImport } from './routes/user.config.tranches-horaires'
 
 const UserRoute = UserRouteImport.update({
   id: '/user',
@@ -48,11 +44,6 @@ const UserParametreRoute = UserParametreRouteImport.update({
   path: '/parametre',
   getParentRoute: () => UserRoute,
 } as any)
-const UserConfigRoute = UserConfigRouteImport.update({
-  id: '/config',
-  path: '/config',
-  getParentRoute: () => UserRoute,
-} as any)
 const RechercheResultatsRoute = RechercheResultatsRouteImport.update({
   id: '/resultats',
   path: '/resultats',
@@ -75,22 +66,6 @@ const UserParametreTranchesHorairesRoute =
     path: '/tranches-horaires',
     getParentRoute: () => UserParametreRoute,
   } as any)
-const UserConfigZoneActiviteRoute = UserConfigZoneActiviteRouteImport.update({
-  id: '/zone-activite',
-  path: '/zone-activite',
-  getParentRoute: () => UserConfigRoute,
-} as any)
-const UserConfigVehiculeRoute = UserConfigVehiculeRouteImport.update({
-  id: '/vehicule',
-  path: '/vehicule',
-  getParentRoute: () => UserConfigRoute,
-} as any)
-const UserConfigTranchesHorairesRoute =
-  UserConfigTranchesHorairesRouteImport.update({
-    id: '/tranches-horaires',
-    path: '/tranches-horaires',
-    getParentRoute: () => UserConfigRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -98,11 +73,7 @@ export interface FileRoutesByFullPath {
   '/trajets': typeof TrajetsRoute
   '/user': typeof UserRouteWithChildren
   '/recherche/resultats': typeof RechercheResultatsRoute
-  '/user/config': typeof UserConfigRouteWithChildren
   '/user/parametre': typeof UserParametreRouteWithChildren
-  '/user/config/tranches-horaires': typeof UserConfigTranchesHorairesRoute
-  '/user/config/vehicule': typeof UserConfigVehiculeRoute
-  '/user/config/zone-activite': typeof UserConfigZoneActiviteRoute
   '/user/parametre/tranches-horaires': typeof UserParametreTranchesHorairesRoute
   '/user/parametre/vehicule': typeof UserParametreVehiculeRoute
   '/user/parametre/zone-activite': typeof UserParametreZoneActiviteRoute
@@ -113,11 +84,7 @@ export interface FileRoutesByTo {
   '/trajets': typeof TrajetsRoute
   '/user': typeof UserRouteWithChildren
   '/recherche/resultats': typeof RechercheResultatsRoute
-  '/user/config': typeof UserConfigRouteWithChildren
   '/user/parametre': typeof UserParametreRouteWithChildren
-  '/user/config/tranches-horaires': typeof UserConfigTranchesHorairesRoute
-  '/user/config/vehicule': typeof UserConfigVehiculeRoute
-  '/user/config/zone-activite': typeof UserConfigZoneActiviteRoute
   '/user/parametre/tranches-horaires': typeof UserParametreTranchesHorairesRoute
   '/user/parametre/vehicule': typeof UserParametreVehiculeRoute
   '/user/parametre/zone-activite': typeof UserParametreZoneActiviteRoute
@@ -129,11 +96,7 @@ export interface FileRoutesById {
   '/trajets': typeof TrajetsRoute
   '/user': typeof UserRouteWithChildren
   '/recherche/resultats': typeof RechercheResultatsRoute
-  '/user/config': typeof UserConfigRouteWithChildren
   '/user/parametre': typeof UserParametreRouteWithChildren
-  '/user/config/tranches-horaires': typeof UserConfigTranchesHorairesRoute
-  '/user/config/vehicule': typeof UserConfigVehiculeRoute
-  '/user/config/zone-activite': typeof UserConfigZoneActiviteRoute
   '/user/parametre/tranches-horaires': typeof UserParametreTranchesHorairesRoute
   '/user/parametre/vehicule': typeof UserParametreVehiculeRoute
   '/user/parametre/zone-activite': typeof UserParametreZoneActiviteRoute
@@ -146,11 +109,7 @@ export interface FileRouteTypes {
     | '/trajets'
     | '/user'
     | '/recherche/resultats'
-    | '/user/config'
     | '/user/parametre'
-    | '/user/config/tranches-horaires'
-    | '/user/config/vehicule'
-    | '/user/config/zone-activite'
     | '/user/parametre/tranches-horaires'
     | '/user/parametre/vehicule'
     | '/user/parametre/zone-activite'
@@ -161,11 +120,7 @@ export interface FileRouteTypes {
     | '/trajets'
     | '/user'
     | '/recherche/resultats'
-    | '/user/config'
     | '/user/parametre'
-    | '/user/config/tranches-horaires'
-    | '/user/config/vehicule'
-    | '/user/config/zone-activite'
     | '/user/parametre/tranches-horaires'
     | '/user/parametre/vehicule'
     | '/user/parametre/zone-activite'
@@ -176,11 +131,7 @@ export interface FileRouteTypes {
     | '/trajets'
     | '/user'
     | '/recherche/resultats'
-    | '/user/config'
     | '/user/parametre'
-    | '/user/config/tranches-horaires'
-    | '/user/config/vehicule'
-    | '/user/config/zone-activite'
     | '/user/parametre/tranches-horaires'
     | '/user/parametre/vehicule'
     | '/user/parametre/zone-activite'
@@ -230,13 +181,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserParametreRouteImport
       parentRoute: typeof UserRoute
     }
-    '/user/config': {
-      id: '/user/config'
-      path: '/config'
-      fullPath: '/user/config'
-      preLoaderRoute: typeof UserConfigRouteImport
-      parentRoute: typeof UserRoute
-    }
     '/recherche/resultats': {
       id: '/recherche/resultats'
       path: '/resultats'
@@ -265,27 +209,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserParametreTranchesHorairesRouteImport
       parentRoute: typeof UserParametreRoute
     }
-    '/user/config/zone-activite': {
-      id: '/user/config/zone-activite'
-      path: '/zone-activite'
-      fullPath: '/user/config/zone-activite'
-      preLoaderRoute: typeof UserConfigZoneActiviteRouteImport
-      parentRoute: typeof UserConfigRoute
-    }
-    '/user/config/vehicule': {
-      id: '/user/config/vehicule'
-      path: '/vehicule'
-      fullPath: '/user/config/vehicule'
-      preLoaderRoute: typeof UserConfigVehiculeRouteImport
-      parentRoute: typeof UserConfigRoute
-    }
-    '/user/config/tranches-horaires': {
-      id: '/user/config/tranches-horaires'
-      path: '/tranches-horaires'
-      fullPath: '/user/config/tranches-horaires'
-      preLoaderRoute: typeof UserConfigTranchesHorairesRouteImport
-      parentRoute: typeof UserConfigRoute
-    }
   }
 }
 
@@ -299,22 +222,6 @@ const RechercheRouteChildren: RechercheRouteChildren = {
 
 const RechercheRouteWithChildren = RechercheRoute._addFileChildren(
   RechercheRouteChildren,
-)
-
-interface UserConfigRouteChildren {
-  UserConfigTranchesHorairesRoute: typeof UserConfigTranchesHorairesRoute
-  UserConfigVehiculeRoute: typeof UserConfigVehiculeRoute
-  UserConfigZoneActiviteRoute: typeof UserConfigZoneActiviteRoute
-}
-
-const UserConfigRouteChildren: UserConfigRouteChildren = {
-  UserConfigTranchesHorairesRoute: UserConfigTranchesHorairesRoute,
-  UserConfigVehiculeRoute: UserConfigVehiculeRoute,
-  UserConfigZoneActiviteRoute: UserConfigZoneActiviteRoute,
-}
-
-const UserConfigRouteWithChildren = UserConfigRoute._addFileChildren(
-  UserConfigRouteChildren,
 )
 
 interface UserParametreRouteChildren {
@@ -334,12 +241,10 @@ const UserParametreRouteWithChildren = UserParametreRoute._addFileChildren(
 )
 
 interface UserRouteChildren {
-  UserConfigRoute: typeof UserConfigRouteWithChildren
   UserParametreRoute: typeof UserParametreRouteWithChildren
 }
 
 const UserRouteChildren: UserRouteChildren = {
-  UserConfigRoute: UserConfigRouteWithChildren,
   UserParametreRoute: UserParametreRouteWithChildren,
 }
 
