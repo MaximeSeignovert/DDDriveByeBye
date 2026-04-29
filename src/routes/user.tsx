@@ -1,5 +1,5 @@
 ﻿import { createFileRoute, Link, Outlet, useRouterState } from '@tanstack/react-router'
-import { Star, Car, MapPin, Clock } from 'lucide-react'
+import { Star, Car, MapPin, Clock, Settings } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Label } from '@/components/ui/label'
@@ -13,6 +13,12 @@ type UserData = {
 }
 
 const parameterLinks = [
+  {
+    to: '/user/parametre',
+    label: 'Parametres generaux',
+    description: 'Choisir le theme clair ou sombre de l’application.',
+    icon: Settings,
+  },
   {
     to: '/user/parametre/vehicule',
     label: 'Parametres vehicule',

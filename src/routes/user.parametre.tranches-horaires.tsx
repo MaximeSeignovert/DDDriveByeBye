@@ -7,8 +7,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 type UserData = {
-  availability?: Array<{ day: string; slots: string[] }>
+  availability?: Array<{ start: string; end: string }>
 }
+
+type AvailabilityTimeField = 'start' | 'end'
 
 export const Route = createFileRoute('/user/parametre/tranches-horaires')({
   loader: async () => {
@@ -21,32 +23,17 @@ export const Route = createFileRoute('/user/parametre/tranches-horaires')({
 function AvailabilityParametrePage() {
   const data = Route.useLoaderData()
   const [availability, setAvailability] = useState(data.availability ?? [])
-  const [newAvailability, setNewAvailability] = useState({ day: '', slots: '' })
+  const [newAvailability, setNewAvailability] = useState({ start: '', end: '' })
 
   const addAvailability = () => {
-    if (!newAvailability.day.trim() || !newAvailability.slots.trim()) return
-    const parsedSlots = newAvailability.slots
-      .split(',')
-      .map((slot) => slot.trim())
-      .filter(Boolean)
-    if (parsedSlots.length === 0) return
-    setAvailability((prev) => [...prev, { day: newAvailability.day.trim(), slots: parsedSlots }])
-    setNewAvailability({ day: '', slots: '' })
+    if (!newAvailability.start || !newAvailability.end) return
+    setAvailability((prev) => [...prev, newAvailability])
+    setNewAvailability({ start: '', end: '' })
   }
 
-  const updateAvailabilityDay = (index: number, value: string) => {
+  const updateAvailabilityTime = (index: number, field: AvailabilityTimeField, value: string) => {
     setAvailability((prev) =>
-      prev.map((item, itemIndex) => (itemIndex === index ? { ...item, day: value } : item)),
-    )
-  }
-
-  const updateAvailabilitySlots = (index: number, value: string) => {
-    const parsedSlots = value
-      .split(',')
-      .map((slot) => slot.trim())
-      .filter(Boolean)
-    setAvailability((prev) =>
-      prev.map((item, itemIndex) => (itemIndex === index ? { ...item, slots: parsedSlots } : item)),
+      prev.map((item, itemIndex) => (itemIndex === index ? { ...item, [field]: value } : item)),
     )
   }
 
@@ -69,18 +56,26 @@ function AvailabilityParametrePage() {
         </CardHeader>
         <CardContent className="space-y-3">
           {availability.length > 0 ? (
-            <div className="space-y-2 text-sm">
+            <div className="divide-y text-sm">
               {availability.map((item, index) => (
-                <div key={`${item.day}-${index}`} className="rounded-lg border bg-background p-3 space-y-2">
+                <div
+                  key={`${item.start}-${item.end}-${index}`}
+                  className="grid gap-3 py-3 first:pt-0 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
+                >
                   <div className="space-y-1">
-                    <Label>Jour</Label>
-                    <Input value={item.day} onChange={(event) => updateAvailabilityDay(index, event.target.value)} />
+                    <Label>Debut</Label>
+                    <Input
+                      type="time"
+                      value={item.start}
+                      onChange={(event) => updateAvailabilityTime(index, 'start', event.target.value)}
+                    />
                   </div>
                   <div className="space-y-1">
-                    <Label>Tranches (separees par des virgules)</Label>
+                    <Label>Fin</Label>
                     <Input
-                      value={item.slots.join(', ')}
-                      onChange={(event) => updateAvailabilitySlots(index, event.target.value)}
+                      type="time"
+                      value={item.end}
+                      onChange={(event) => updateAvailabilityTime(index, 'end', event.target.value)}
                     />
                   </div>
                   <Button type="button" variant="destructive" size="sm" onClick={() => deleteAvailability(index)}>
@@ -94,35 +89,37 @@ function AvailabilityParametrePage() {
             <p className="text-sm text-muted-foreground">Aucune disponibilite renseignee.</p>
           )}
 
-          <div className="rounded-lg border bg-muted/30 p-3 space-y-2">
+          <div className="space-y-3 pt-2">
             <p className="text-sm font-medium">Ajouter une disponibilite</p>
-            <div className="space-y-1">
-              <Label htmlFor="availability-day">Jour</Label>
-              <Input
-                id="availability-day"
-                placeholder="Ex: Lundi-Vendredi"
-                value={newAvailability.day}
-                onChange={(event) =>
-                  setNewAvailability((prev) => ({
-                    ...prev,
-                    day: event.target.value,
-                  }))
-                }
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="availability-slots">Tranches horaires</Label>
-              <Input
-                id="availability-slots"
-                placeholder="Ex: 08:00-10:00, 18:00-20:00"
-                value={newAvailability.slots}
-                onChange={(event) =>
-                  setNewAvailability((prev) => ({
-                    ...prev,
-                    slots: event.target.value,
-                  }))
-                }
-              />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1">
+                <Label htmlFor="availability-start">Debut</Label>
+                <Input
+                  id="availability-start"
+                  type="time"
+                  value={newAvailability.start}
+                  onChange={(event) =>
+                    setNewAvailability((prev) => ({
+                      ...prev,
+                      start: event.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="availability-end">Fin</Label>
+                <Input
+                  id="availability-end"
+                  type="time"
+                  value={newAvailability.end}
+                  onChange={(event) =>
+                    setNewAvailability((prev) => ({
+                      ...prev,
+                      end: event.target.value,
+                    }))
+                  }
+                />
+              </div>
             </div>
             <Button type="button" onClick={addAvailability}>
               Ajouter la tranche

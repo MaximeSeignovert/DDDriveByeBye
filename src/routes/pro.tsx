@@ -5,6 +5,8 @@ import 'leaflet/dist/leaflet.css'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getMapTileLayer } from '@/lib/map-tiles'
+import { useTheme } from '@/lib/theme'
 import { useUserMode } from '@/lib/user-mode'
 
 type ProfessionalRide = {
@@ -32,7 +34,9 @@ export const Route = createFileRoute('/pro')({
 
 function ProfessionalPage() {
   const data = Route.useLoaderData()
+  const theme = useTheme()
   const userMode = useUserMode()
+  const mapTileLayer = getMapTileLayer(theme)
 
   if (userMode !== 'professionnel') {
     return (
@@ -77,15 +81,20 @@ function ProfessionalPage() {
           className="h-[420px] w-full"
         >
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            key={theme}
+            attribution={mapTileLayer.attribution}
+            url={mapTileLayer.url}
           />
           {data.rides.map((ride) => (
             <CircleMarker
               key={ride.id}
               center={ride.pickup}
               radius={10}
-              pathOptions={{ color: '#111827', fillColor: '#111827', fillOpacity: 0.85 }}
+              pathOptions={{
+                color: theme === 'dark' ? '#f97316' : '#111827',
+                fillColor: theme === 'dark' ? '#f97316' : '#111827',
+                fillOpacity: 0.85,
+              }}
             >
               <Popup>
                 <div className="space-y-1 text-sm">

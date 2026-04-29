@@ -65,18 +65,23 @@ function VehicleParametrePage() {
         <CardHeader>
           <CardTitle className="text-xl">Parametres vehicule</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-5">
           {vehicles.length > 0 ? (
-            <div className="space-y-2">
+            <div className="divide-y">
               {vehicles.map((vehicle, index) => (
-                <div key={`${vehicle.plate}-${index}`} className="rounded-lg border bg-background p-3 text-sm">
-                  <p className="font-medium">
-                    {vehicle.brand} {vehicle.model}
-                  </p>
-                  <p className="text-muted-foreground">
-                    {vehicle.plate} - {vehicle.seats} places
-                  </p>
-                  <div className="mt-2 flex gap-2">
+                <div
+                  key={`${vehicle.plate}-${index}`}
+                  className="flex flex-col gap-3 py-3 first:pt-0 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="text-sm">
+                    <p className="font-medium">
+                      {vehicle.brand} {vehicle.model}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {vehicle.plate} - {vehicle.seats} places
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
                     <Button type="button" size="sm" variant="outline" onClick={() => startEditVehicle(index)}>
                       <Pencil className="mr-1 h-3.5 w-3.5" />
                       Modifier
@@ -93,11 +98,11 @@ function VehicleParametrePage() {
             <p className="text-sm text-muted-foreground">Aucun vehicule renseigne.</p>
           )}
 
-          <div className="rounded-lg border bg-muted/30 p-3 space-y-3">
+          <div className="space-y-3">
             <p className="text-sm font-medium">
               {editingVehicleIndex !== null ? 'Modifier le vehicule' : 'Ajouter un vehicule'}
             </p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1">
                 <Label>Marque</Label>
                 <Input

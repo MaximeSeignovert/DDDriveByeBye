@@ -1,7 +1,6 @@
 ﻿import { useState } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft, Trash2 } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -50,7 +49,7 @@ function ActivityZoneParametrePage() {
         <CardHeader>
           <CardTitle className="text-xl">Parametres zone d'activite</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-4">
           {activityZones.length > 0 ? (
             <div className="space-y-2">
               {activityZones.map((zone, index) => (
@@ -66,7 +65,7 @@ function ActivityZoneParametrePage() {
             <p className="text-sm text-muted-foreground">Aucune zone renseignee.</p>
           )}
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 pt-1">
             <Input
               placeholder="Ajouter une zone d'activite"
               value={newZone}
@@ -75,14 +74,6 @@ function ActivityZoneParametrePage() {
             <Button type="button" onClick={addZone}>
               Ajouter
             </Button>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {activityZones.map((zone) => (
-              <Badge key={`badge-${zone}`} variant="secondary">
-                {zone}
-              </Badge>
-            ))}
           </div>
         </CardContent>
       </Card>
