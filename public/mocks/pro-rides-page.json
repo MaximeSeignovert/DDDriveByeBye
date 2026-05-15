@@ -2,33 +2,42 @@
   "rides": [
     {
       "id": "pro-ride-1",
-      "from": "Gare Part-Dieu",
-      "to": "Musee des Confluences",
-      "pickup": [45.7602, 4.8595],
-      "dropoff": [45.7336, 4.8185],
-      "requestedAt": "Dans 4 min",
+      "from": "Grenoble Gare",
+      "to": "Presqu'ile",
+      "pickup": [45.1915, 5.7145],
+      "dropoff": [45.2003, 5.7043],
+      "requestedAt": "Demandee maintenant",
+      "passengerName": "Camille R.",
+      "duration": "12 min",
+      "status": "Nouvelle demande",
       "price": "18,50 EUR",
-      "distance": "5,8 km"
+      "distance": "2,1 km"
     },
     {
       "id": "pro-ride-2",
-      "from": "Place Bellecour",
-      "to": "Stade de Gerland",
-      "pickup": [45.7578, 4.832],
-      "dropoff": [45.7247, 4.8311],
-      "requestedAt": "Dans 7 min",
+      "from": "Place Victor Hugo",
+      "to": "Campus Saint-Martin-d'Heres",
+      "pickup": [45.1891, 5.7266],
+      "dropoff": [45.1921, 5.7718],
+      "requestedAt": "Demandee il y a 2 min",
+      "passengerName": "Leo M.",
+      "duration": "15 min",
+      "status": "A proximite",
       "price": "16,20 EUR",
-      "distance": "4,9 km"
+      "distance": "4,2 km"
     },
     {
       "id": "pro-ride-3",
       "from": "Hotel de Ville",
-      "to": "Aeroport Lyon-Bron",
-      "pickup": [45.7675, 4.8343],
-      "dropoff": [45.7297, 4.9386],
-      "requestedAt": "Dans 12 min",
+      "to": "Meylan Inovallee",
+      "pickup": [45.1867, 5.7356],
+      "dropoff": [45.2097, 5.7797],
+      "requestedAt": "Demandee il y a 5 min",
+      "passengerName": "Sofia R.",
+      "duration": "18 min",
+      "status": "Tarif premium",
       "price": "32,00 EUR",
-      "distance": "12,4 km"
+      "distance": "6,1 km"
     }
   ]
 }

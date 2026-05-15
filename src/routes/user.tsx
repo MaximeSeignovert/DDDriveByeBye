@@ -1,15 +1,22 @@
-﻿import { createFileRoute, Link, Outlet, useRouterState } from '@tanstack/react-router'
+﻿import { useState } from 'react'
+import { createFileRoute, Link, Outlet, useRouterState } from '@tanstack/react-router'
 import { Star, Car, MapPin, Clock, Settings } from 'lucide-react'
+import { StatusState } from '@/components/status-state'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { setUserMode, useUserMode } from '@/lib/user-mode'
+import { getDriverProfile, getUser, type DriverProfileDto, type UserDto } from '@/lib/api'
+import { ensureDriverId, getStoredDriverId, getStoredPassengerId } from '@/lib/demo-session'
+import { getUserMode, setUserMode, useUserMode } from '@/lib/user-mode'
 
 type UserData = {
   firstName: string
   lastName: string
   rating: number
+  user?: UserDto
+  driverProfile?: DriverProfileDto | null
+  errorMessage?: string
 }
 
 const parameterLinks = [
@@ -41,6 +48,35 @@ const parameterLinks = [
 
 export const Route = createFileRoute('/user')({
   loader: async () => {
+    const userId = getStoredDriverId() ?? getStoredPassengerId()
+
+    if (userId) {
+      try {
+        const user = await getUser(userId)
+        const driverProfile =
+          user.accountType === 'PROFESSIONAL'
+            ? await getDriverProfile(userId).catch(() => null)
+            : null
+        const [firstName = user.fullName, ...lastNameParts] = user.fullName.split(' ')
+
+        return {
+          firstName,
+          lastName: lastNameParts.join(' '),
+          rating: 4.6,
+          user,
+          driverProfile,
+        } satisfies UserData
+      } catch (error) {
+        const response = await fetch('/mocks/user-page.json')
+        const data = (await response.json()) as UserData
+
+        return {
+          ...data,
+          errorMessage: error instanceof Error ? error.message : 'Impossible de charger le profil.',
+        } satisfies UserData
+      }
+    }
+
     const response = await fetch('/mocks/user-page.json')
     return (await response.json()) as UserData
   },
@@ -56,8 +92,10 @@ function UserPage() {
 function UserProfile() {
   const data = Route.useLoaderData()
   const userMode = useUserMode()
+  const [professionalModeError, setProfessionalModeError] = useState<string | null>(null)
   const fullName = `${data.firstName} ${data.lastName}`
   const isProfessional = userMode === 'professionnel'
+  const driverProfile = data.driverProfile
 
   return (
     <div className="space-y-4">
@@ -68,6 +106,24 @@ function UserProfile() {
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">Nom prenom</p>
           <p className="text-lg font-semibold">{fullName}</p>
+          {data.user ? (
+            <p className="text-sm text-muted-foreground">
+              {data.user.email} - {data.user.accountType} - {data.user.status}
+            </p>
+          ) : null}
+          {driverProfile ? (
+            <p className="text-sm text-muted-foreground">
+              Profil chauffeur: {driverProfile.status} - disponibilite {driverProfile.availabilityStatus}
+            </p>
+          ) : null}
+          {data.errorMessage ? (
+            <StatusState
+              tone="offline"
+              title="Profil local affiche"
+              description="Le profil back n'est pas disponible pour le moment. Les informations de secours restent affichees pour continuer a naviguer."
+              className="mt-4"
+            />
+          ) : null}
           <Separator />
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Notations</p>
@@ -98,9 +154,33 @@ function UserProfile() {
             <Switch
               id="professional-mode"
               checked={isProfessional}
-              onCheckedChange={(checked) => setUserMode(checked ? 'professionnel' : 'particulier')}
+              onCheckedChange={async (checked) => {
+                setProfessionalModeError(null)
+                setUserMode(checked ? 'professionnel' : 'particulier')
+
+                if (checked) {
+                  try {
+                    await ensureDriverId()
+                  } catch (error) {
+                    if (getUserMode() === 'professionnel') {
+                      setProfessionalModeError(
+                        error instanceof Error
+                          ? error.message
+                          : "Mode professionnel active localement, mais le profil chauffeur n'a pas pu etre synchronise.",
+                      )
+                    }
+                  }
+                }
+              }}
             />
           </div>
+          {professionalModeError ? (
+            <StatusState
+              tone="offline"
+              title="Mode professionnel active localement"
+              description="Tu peux acceder aux courses en mode demo. La creation du profil chauffeur sera retentee depuis l'ecran Courses quand le back sera disponible."
+            />
+          ) : null}
         </CardContent>
       </Card>
 

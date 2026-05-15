@@ -1,19 +1,67 @@
 ﻿import { useState } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft, Pencil, Plus, Trash2 } from 'lucide-react'
+import { StatusState } from '@/components/status-state'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { addVehicle, getDriverProfile, type FuelType, type VehicleDto } from '@/lib/api'
+import { ensureDriverId, getStoredDriverId } from '@/lib/demo-session'
 
 type UserData = {
-  vehicles?: Array<{ brand: string; model: string; plate: string; seats: number }>
+  vehicles?: VehicleForm[]
+  errorMessage?: string
+}
+
+type VehicleForm = {
+  id?: string
+  brand: string
+  model: string
+  plate: string
+  seats: number
+  year: number
+  fuelType: FuelType
+}
+
+function toVehicleForm(vehicle: VehicleDto): VehicleForm {
+  return {
+    id: vehicle.id,
+    brand: vehicle.make,
+    model: vehicle.model,
+    plate: vehicle.licensePlate,
+    seats: vehicle.seats,
+    year: vehicle.year,
+    fuelType: vehicle.fuelType,
+  }
 }
 
 export const Route = createFileRoute('/user/parametre/vehicule')({
   loader: async () => {
+    const driverId = getStoredDriverId()
+
+    if (driverId) {
+      try {
+        const driverProfile = await getDriverProfile(driverId)
+        return { vehicles: driverProfile.vehicles.map(toVehicleForm) } satisfies UserData
+      } catch (error) {
+        return {
+          vehicles: [],
+          errorMessage: error instanceof Error ? error.message : 'Impossible de charger les vehicules.',
+        } satisfies UserData
+      }
+    }
+
     const response = await fetch('/mocks/user-page.json')
-    return (await response.json()) as UserData
+    const data = (await response.json()) as { vehicles?: Array<{ brand: string; model: string; plate: string; seats: number }> }
+
+    return {
+      vehicles: data.vehicles?.map((vehicle) => ({
+        ...vehicle,
+        year: 2022,
+        fuelType: 'HYBRID',
+      })),
+    } satisfies UserData
   },
   component: VehicleParametrePage,
 })
@@ -21,25 +69,58 @@ export const Route = createFileRoute('/user/parametre/vehicule')({
 function VehicleParametrePage() {
   const data = Route.useLoaderData()
   const [vehicles, setVehicles] = useState(data.vehicles ?? [])
-  const [vehicleForm, setVehicleForm] = useState({ brand: '', model: '', plate: '', seats: 4 })
+  const [vehicleForm, setVehicleForm] = useState<VehicleForm>({
+    brand: '',
+    model: '',
+    plate: '',
+    seats: 4,
+    year: 2022,
+    fuelType: 'HYBRID',
+  })
   const [editingVehicleIndex, setEditingVehicleIndex] = useState<number | null>(null)
+  const [statusMessage, setStatusMessage] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const resetVehicleForm = () => {
-    setVehicleForm({ brand: '', model: '', plate: '', seats: 4 })
+    setVehicleForm({ brand: '', model: '', plate: '', seats: 4, year: 2022, fuelType: 'HYBRID' })
     setEditingVehicleIndex(null)
   }
 
-  const submitVehicle = () => {
+  const submitVehicle = async () => {
     if (!vehicleForm.brand || !vehicleForm.model || !vehicleForm.plate) return
+    setIsSubmitting(true)
+    setStatusMessage(null)
+
     if (editingVehicleIndex !== null) {
       setVehicles((prev) =>
         prev.map((item, index) => (index === editingVehicleIndex ? vehicleForm : item)),
       )
       resetVehicleForm()
+      setStatusMessage('Modification locale uniquement: le back expose seulement l’ajout de vehicule.')
+      setIsSubmitting(false)
       return
     }
-    setVehicles((prev) => [...prev, vehicleForm])
-    resetVehicleForm()
+
+    try {
+      const driverId = await ensureDriverId()
+      const vehicleId = await addVehicle(driverId, {
+        make: vehicleForm.brand,
+        model: vehicleForm.model,
+        year: vehicleForm.year,
+        licensePlate: vehicleForm.plate,
+        seats: vehicleForm.seats,
+        fuelType: vehicleForm.fuelType,
+        options: ['AIR_CONDITIONING'],
+      })
+
+      setVehicles((prev) => [...prev, { ...vehicleForm, id: vehicleId ?? undefined }])
+      resetVehicleForm()
+      setStatusMessage('Vehicule ajoute via le back.')
+    } catch (error) {
+      setStatusMessage(error instanceof Error ? error.message : 'Impossible d’ajouter le vehicule.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const startEditVehicle = (index: number) => {
@@ -78,7 +159,7 @@ function VehicleParametrePage() {
                       {vehicle.brand} {vehicle.model}
                     </p>
                     <p className="text-muted-foreground">
-                      {vehicle.plate} - {vehicle.seats} places
+                      {vehicle.plate} - {vehicle.seats} places - {vehicle.fuelType}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -95,7 +176,15 @@ function VehicleParametrePage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">Aucun vehicule renseigne.</p>
+            <StatusState
+              tone={data.errorMessage ? 'offline' : 'empty'}
+              title={data.errorMessage ? 'Vehicules indisponibles' : 'Aucun vehicule renseigne'}
+              description={
+                data.errorMessage
+                  ? "Le back n'a pas retourne la liste des vehicules. Tu peux tout de meme tenter un nouvel ajout."
+                  : 'Ajoute ton premier vehicule pour pouvoir recevoir ou proposer des trajets.'
+              }
+            />
           )}
 
           <div className="space-y-3">
@@ -136,11 +225,39 @@ function VehicleParametrePage() {
                   }
                 />
               </div>
+              <div className="space-y-1">
+                <Label>Annee</Label>
+                <Input
+                  type="number"
+                  min={1990}
+                  max={2035}
+                  value={vehicleForm.year}
+                  onChange={(event) =>
+                    setVehicleForm((prev) => ({ ...prev, year: Number(event.target.value) || 2022 }))
+                  }
+                />
+              </div>
+              <div className="space-y-1">
+                <Label>Carburant</Label>
+                <select
+                  value={vehicleForm.fuelType}
+                  className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs"
+                  onChange={(event) =>
+                    setVehicleForm((prev) => ({ ...prev, fuelType: event.target.value as FuelType }))
+                  }
+                >
+                  <option value="GASOLINE">Essence</option>
+                  <option value="DIESEL">Diesel</option>
+                  <option value="HYBRID">Hybride</option>
+                  <option value="ELECTRIC">Electrique</option>
+                  <option value="LPG">GPL</option>
+                </select>
+              </div>
             </div>
             <div className="flex gap-2">
-              <Button type="button" onClick={submitVehicle}>
+              <Button type="button" onClick={submitVehicle} disabled={isSubmitting}>
                 <Plus className="mr-1 h-3.5 w-3.5" />
-                {editingVehicleIndex !== null ? 'Mettre a jour' : 'Ajouter'}
+                {isSubmitting ? 'Envoi...' : editingVehicleIndex !== null ? 'Mettre a jour' : 'Ajouter'}
               </Button>
               {editingVehicleIndex !== null ? (
                 <Button type="button" variant="outline" onClick={resetVehicleForm}>
@@ -148,6 +265,7 @@ function VehicleParametrePage() {
                 </Button>
               ) : null}
             </div>
+            {statusMessage ? <p className="text-sm text-muted-foreground">{statusMessage}</p> : null}
           </div>
         </CardContent>
       </Card>

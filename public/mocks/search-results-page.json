@@ -4,8 +4,8 @@
       "id": "ride-1",
       "driverName": "Yanis L.",
       "rating": 4.8,
-      "from": "Part-Dieu",
-      "to": "Confluence",
+      "from": "Grenoble Gare",
+      "to": "Presqu'ile",
       "departureIn": "8 min",
       "seatsLeft": 2
     },
@@ -13,8 +13,8 @@
       "id": "ride-2",
       "driverName": "Salome P.",
       "rating": 4.6,
-      "from": "Bellecour",
-      "to": "Gerland",
+      "from": "Victor Hugo",
+      "to": "Campus",
       "departureIn": "15 min",
       "seatsLeft": 1
     }
@@ -22,20 +22,22 @@
   "vtc": [
     {
       "id": "vtc-1",
-      "company": "Lyon VTC Services",
+      "company": "Grenoble VTC Services",
       "vehicle": "Tesla Model 3",
-      "from": "Part-Dieu",
-      "to": "Confluence",
+      "from": "Grenoble Gare",
+      "to": "Presqu'ile",
       "waitTime": "4 min",
+      "duration": "12 min",
       "price": "18,50 EUR"
     },
     {
       "id": "vtc-2",
       "company": "CityCab Pro",
       "vehicle": "Peugeot 508",
-      "from": "Bellecour",
-      "to": "Gerland",
+      "from": "Victor Hugo",
+      "to": "Campus",
       "waitTime": "6 min",
+      "duration": "15 min",
       "price": "16,20 EUR"
     }
   ]

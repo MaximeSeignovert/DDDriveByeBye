@@ -10,7 +10,7 @@
       "seats": 4
     }
   ],
-  "activityZone": ["Lyon Centre", "Villeurbanne", "Bron"],
+  "activityZone": ["Grenoble Centre", "Meylan", "Saint-Martin-d'Heres"],
   "availability": [
     {
       "start": "07:00",

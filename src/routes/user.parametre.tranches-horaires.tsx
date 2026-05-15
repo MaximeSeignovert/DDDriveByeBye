@@ -1,19 +1,43 @@
 ﻿import { useState } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ArrowLeft, Trash2 } from 'lucide-react'
+import { ArrowLeft, Power, Trash2 } from 'lucide-react'
+import { StatusState } from '@/components/status-state'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { activateDriverAvailability, deactivateDriverAvailability, getDriverProfile } from '@/lib/api'
+import { ensureDriverId, getStoredDriverId } from '@/lib/demo-session'
 
 type UserData = {
   availability?: Array<{ start: string; end: string }>
+  isAvailable?: boolean
+  errorMessage?: string
 }
 
 type AvailabilityTimeField = 'start' | 'end'
 
 export const Route = createFileRoute('/user/parametre/tranches-horaires')({
   loader: async () => {
+    const driverId = getStoredDriverId()
+
+    if (driverId) {
+      try {
+        const driverProfile = await getDriverProfile(driverId)
+
+        return {
+          availability: [{ start: '07:00', end: '21:00' }],
+          isAvailable: driverProfile.availabilityStatus === 'AVAILABLE',
+        } satisfies UserData
+      } catch (error) {
+        return {
+          availability: [],
+          isAvailable: false,
+          errorMessage: error instanceof Error ? error.message : 'Impossible de charger la disponibilite.',
+        } satisfies UserData
+      }
+    }
+
     const response = await fetch('/mocks/user-page.json')
     return (await response.json()) as UserData
   },
@@ -24,6 +48,9 @@ function AvailabilityParametrePage() {
   const data = Route.useLoaderData()
   const [availability, setAvailability] = useState(data.availability ?? [])
   const [newAvailability, setNewAvailability] = useState({ start: '', end: '' })
+  const [isAvailable, setIsAvailable] = useState(data.isAvailable ?? false)
+  const [statusMessage, setStatusMessage] = useState<string | null>(null)
+  const [isSyncing, setIsSyncing] = useState(false)
 
   const addAvailability = () => {
     if (!newAvailability.start || !newAvailability.end) return
@@ -41,6 +68,29 @@ function AvailabilityParametrePage() {
     setAvailability((prev) => prev.filter((_, itemIndex) => itemIndex !== index))
   }
 
+  const toggleBackAvailability = async () => {
+    setIsSyncing(true)
+    setStatusMessage(null)
+
+    try {
+      const driverId = await ensureDriverId()
+
+      if (isAvailable) {
+        await deactivateDriverAvailability(driverId)
+        setIsAvailable(false)
+        setStatusMessage('Disponibilite desactivee cote back.')
+      } else {
+        await activateDriverAvailability(driverId)
+        setIsAvailable(true)
+        setStatusMessage('Disponibilite activee cote back.')
+      }
+    } catch (error) {
+      setStatusMessage(error instanceof Error ? error.message : 'Impossible de mettre a jour la disponibilite.')
+    } finally {
+      setIsSyncing(false)
+    }
+  }
+
   return (
     <div className="space-y-4">
       <Button asChild variant="ghost" className="px-2">
@@ -55,6 +105,27 @@ function AvailabilityParametrePage() {
           <CardTitle className="text-xl">Parametres tranches horaires</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
+          {data.errorMessage ? (
+            <StatusState
+              tone="offline"
+              title="Disponibilite non chargee"
+              description="Le statut chauffeur n'est pas disponible. Tu peux reessayer l'activation quand le back repond."
+            />
+          ) : null}
+          <div className="flex items-center justify-between gap-3 rounded-lg border bg-background p-3">
+            <div>
+              <p className="text-sm font-medium">Disponibilite back</p>
+              <p className="text-sm text-muted-foreground">
+                {isAvailable ? 'Chauffeur disponible.' : 'Chauffeur hors ligne.'}
+              </p>
+            </div>
+            <Button type="button" variant={isAvailable ? 'outline' : 'default'} onClick={toggleBackAvailability} disabled={isSyncing}>
+              <Power className="mr-1 h-3.5 w-3.5" />
+              {isSyncing ? 'Envoi...' : isAvailable ? 'Desactiver' : 'Activer'}
+            </Button>
+          </div>
+          {statusMessage ? <p className="text-sm text-muted-foreground">{statusMessage}</p> : null}
+
           {availability.length > 0 ? (
             <div className="divide-y text-sm">
               {availability.map((item, index) => (
@@ -86,7 +157,10 @@ function AvailabilityParametrePage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">Aucune disponibilite renseignee.</p>
+            <StatusState
+              title="Aucune tranche horaire"
+              description="Ajoute une premiere plage pour visualiser tes horaires de conduite dans l'application."
+            />
           )}
 
           <div className="space-y-3 pt-2">
